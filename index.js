@@ -1,10 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
+const { mongoDB } = require("./constants");
 
 const app = express();
 const PORT = 3000;
-const mongoDB = `mongodb+srv://Nat-crit20:Valoria246890@myflixdb.m9xnkss.mongodb.net/KanbanDB?`;
 
 main()
   .then(() => console.log("Connected to database"))
