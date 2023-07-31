@@ -23,8 +23,5 @@ const boardSchema = Schema({
   ],
 });
 
-let Task = mongoose.model("Task", taskSchema);
-let Board = mongoose.model("Board", boardSchema);
-
-module.exports.Task = Task;
-module.exports.Board = Board;
+module.exports = mongoose.model("Task", taskSchema);
+module.exports = mongoose.model("Board", boardSchema);
