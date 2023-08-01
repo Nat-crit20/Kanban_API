@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const taskSchema = Schema({
   Title: String,
+  columnId: String,
   Description: String,
   Status: String,
   SubTasks: [

@@ -6,6 +6,7 @@ const { mongoDB } = require("./constants");
 const User = require("./models/User");
 const Board = require("./models/Board");
 const Task = require("./models/Task");
+const Column = require("./models/Column");
 const bodyParser = require("body-parser");
 
 const app = express();
@@ -71,7 +72,6 @@ app.get("/user/:userID/board/:boardID", async (req, res) => {
     { _id: 0, Board: { $elemMatch: { $eq: boardID } } }
   )
     .populate("Board")
-    .populate("Task")
     .then((user) => user[0].Board[0])
     .catch((err) => res.send(err));
   res.send(user);
@@ -96,17 +96,25 @@ app.post("/user/:userID/board", async (req, res) => {
     });
 });
 
-app.post("/user/:userID/board/:boardID/column", async (req, res) => {
-  const { userID, boardID } = req.params;
-  const user = await User.find(
-    { _id: userID },
-    { _id: 0, Board: { $elemMatch: { $eq: boardID } } }
+app.post("/board/:boardID/column", async (req, res) => {
+  const { Name } = req.body;
+  const { boardID } = req.params;
+
+  const column = await Column.create({
+    Name: Name,
+  });
+
+  await Board.findOneAndUpdate(
+    { _id: boardID },
+    { $push: { Columns: column._id } },
+    { new: true }
   )
-    .populate("Board")
-    .then((user) => user[0].Board[0])
-    .update({})
-    .catch((err) => res.send(err));
-  res.send(user);
+    .then((board) => {
+      res.status(200).json(board);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 });
 
 app.listen(PORT, () => {
