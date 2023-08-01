@@ -68,7 +68,7 @@
         <td>Update a task</td>
         <td>/task/:taskID</td>
         <td>PUT</td>
-        <td>:userID, :boardID, :columnID, : taskID</td>
+        <td>: taskID</td>
         <td>
           { Title: req.body.Title, Description: req.body.Description, Status:
           req.body.Status, SubTasks: [ { title: req.body.SubTasks[i].title,
@@ -86,7 +86,7 @@
       </tr>
       <tr>
         <td>Update a column</td>
-        <td>/user/:userID/board/:boardID/column/:columnID</td>
+        <td>/column/:columnID</td>
         <td>PUT</td>
         <td>:userID, :boardID, :columnID,</td>
         <td>
