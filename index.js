@@ -63,6 +63,23 @@ app.get("/users", async (req, res) => {
   res.json(users);
 });
 
+app.get("/user/:userID/board/:boardID", async (req, res) => {
+  const { userID, boardID } = req.params;
+  const userBoard = await User.findById(userID).then(async (user) => {
+    if (!user) {
+      res.status(404).send("User not found");
+    } else if (user.Board) {
+      const board = user.Board.findIndex(boardID);
+      if (!board) {
+        res.status(404).send("Board not found");
+      }
+      return board;
+    }
+  });
+  const currentBoard = await Board.findById(userBoard);
+  res.send(currentBoard);
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
 });
