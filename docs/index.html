@@ -88,7 +88,7 @@
         <td>Update a column</td>
         <td>/column/:columnID</td>
         <td>PUT</td>
-        <td>:userID, :boardID, :columnID,</td>
+        <td>:columnID,</td>
         <td>
           A JSON object holding data about the column of a board to add to a
           list in the board, structured like: { "Name": req.body.Name }
@@ -97,9 +97,9 @@
       </tr>
       <tr>
         <td>Update a board</td>
-        <td>/user/:userID/board/boardID</td>
+        <td>/board/boardID</td>
         <td>PUT</td>
-        <td>:userID, :boardID</td>
+        <td>:boardID</td>
         <td>
           A JSON object holding data about the column of a board to add to a
           list in the board, structured like: { "Name": req.body.Name }
