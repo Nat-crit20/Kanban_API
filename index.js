@@ -140,6 +140,32 @@ app.post("/column/:columnID/task", async (req, res) => {
       res.status(400).json(err);
     });
 });
+
+app.put("/task/:taskID", async (req, res) => {
+  const { taskID } = req.params;
+  const { Title, Description, Status, SubTasks } = req.body;
+  await Task.findOneAndUpdate(
+    { _id: taskID },
+    {
+      $set: {
+        Title,
+        Description,
+        Status,
+        SubTasks,
+      },
+    },
+    { new: true }
+  )
+    .then((task) => {
+      if (task) {
+        res.status(200).send(task);
+      }
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
 });
