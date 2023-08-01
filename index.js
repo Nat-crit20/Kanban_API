@@ -67,21 +67,14 @@ app.get("/users", async (req, res) => {
 //Fix bug
 app.get("/user/:userID/board/:boardID", async (req, res) => {
   const { userID, boardID } = req.params;
-  const userBoard = await User.findOne({ _id: userID, Board: boardID }).then(
-    async (user) => {
-      if (!user) {
-        res.status(404).send("User not found");
-      } else if (user.Board) {
-        const board = user.Board.findIndex(boardID);
-        if (!board) {
-          res.status(404).send("Board not found");
-        }
-        return board;
-      }
-    }
-  );
-  const currentBoard = await Board.findById(userBoard);
-  res.status(201).send(currentBoard);
+  const user = await User.find(
+    { _id: userID },
+    { _id: 0, Board: { $elemMatch: { $eq: boardID } } }
+  )
+    .populate("Board")
+    .then((user) => user[0].Board[0])
+    .catch((err) => res.send(err));
+  res.send(user);
 });
 
 app.post("/user/:userID/board", async (req, res) => {
