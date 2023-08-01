@@ -64,7 +64,6 @@ app.get("/users", async (req, res) => {
   res.json(users);
 });
 
-//Fix bug
 app.get("/user/:userID/board/:boardID", async (req, res) => {
   const { userID, boardID } = req.params;
   const user = await User.find(
@@ -72,6 +71,7 @@ app.get("/user/:userID/board/:boardID", async (req, res) => {
     { _id: 0, Board: { $elemMatch: { $eq: boardID } } }
   )
     .populate("Board")
+    .populate("Task")
     .then((user) => user[0].Board[0])
     .catch((err) => res.send(err));
   res.send(user);
@@ -94,6 +94,19 @@ app.post("/user/:userID/board", async (req, res) => {
     .catch((err) => {
       res.status(400).json(err);
     });
+});
+
+app.post("/user/:userID/board/:boardID/column", async (req, res) => {
+  const { userID, boardID } = req.params;
+  const user = await User.find(
+    { _id: userID },
+    { _id: 0, Board: { $elemMatch: { $eq: boardID } } }
+  )
+    .populate("Board")
+    .then((user) => user[0].Board[0])
+    .update({})
+    .catch((err) => res.send(err));
+  res.send(user);
 });
 
 app.listen(PORT, () => {
