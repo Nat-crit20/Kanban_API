@@ -117,6 +117,29 @@ app.post("/board/:boardID/column", async (req, res) => {
     });
 });
 
+app.post("/column/:columnID/task", async (req, res) => {
+  const { Title, Description, Status, SubTasks } = req.body;
+  const { columnID } = req.params;
+
+  const task = await Task.create({
+    Title,
+    Description,
+    Status,
+    SubTasks,
+  });
+
+  await Column.findOneAndUpdate(
+    { _id: columnID },
+    { $push: { Tasks: task._id } },
+    { new: true }
+  )
+    .then((column) => {
+      res.status(200).json(column);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
 });
