@@ -155,6 +155,15 @@ app.post("/column/:columnID/task", async (req, res) => {
     });
 });
 
+app.get("/task/:taskID", async (req, res) => {
+  const { taskID } = req.params;
+  await Task.findById({ _id: taskID })
+    .then((task) => {
+      res.send(task);
+    })
+    .catch((err) => res.send(err));
+});
+
 app.put("/task/:taskID", async (req, res) => {
   const { taskID } = req.params;
   const { Title, Description, Status, SubTasks } = req.body;
