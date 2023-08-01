@@ -19,7 +19,7 @@
       </tr>
       <tr>
         <td>Return boards for a user</td>
-        <td>/user/:userID/board/</td>
+        <td>/user/:userID/board</td>
         <td>GET</td>
         <td>:userID</td>
         <td>-</td>
@@ -37,6 +37,14 @@
         <td>
           A JSON object holding data about a board was added to the user's list
         </td>
+      </tr>
+      <tr>
+        <td>Return board</td>
+        <td>/board/:boardID</td>
+        <td>GET</td>
+        <td>:boardID</td>
+        <td>-</td>
+        <td>A JSON object holding the data about one of the boards</td>
       </tr>
       <tr>
         <td>Create a column in a board</td>
