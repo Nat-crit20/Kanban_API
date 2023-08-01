@@ -82,7 +82,15 @@ app.get("/board/:boardID", async (req, res) => {
     })
     .catch((err) => res.send(err));
 });
-
+app.get("/column/:columnID", async (req, res) => {
+  const { columnID } = req.params;
+  await Column.findById({ _id: columnID })
+    .populate("Tasks")
+    .then((column) => {
+      res.send(column);
+    })
+    .catch((err) => res.send(err));
+});
 app.post("/user/:userID/board", async (req, res) => {
   const { Name } = req.body;
   const { userID } = req.params;
