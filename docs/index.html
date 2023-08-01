@@ -54,9 +54,9 @@
       </tr>
       <tr>
         <td>Create a task for a column</td>
-        <td>/user/:userID/board/:boardID/column/columnID/task</td>
+        <td>/column/:columnID/task</td>
         <td>POST</td>
-        <td>:userID, :boardID, :columnID</td>
+        <td>:columnID</td>
         <td>
           { Title: req.body.Title, Description: req.body.Description, Status:
           req.body.Status, SubTasks: [ { title: req.body.SubTasks[i].title,
