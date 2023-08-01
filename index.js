@@ -65,16 +65,22 @@ app.get("/users", async (req, res) => {
   res.json(users);
 });
 
-app.get("/user/:userID/board/:boardID", async (req, res) => {
-  const { userID, boardID } = req.params;
-  const user = await User.find(
-    { _id: userID },
-    { _id: 0, Board: { $elemMatch: { $eq: boardID } } }
-  )
+app.get("/user/:userID/board", async (req, res) => {
+  const { userID } = req.params;
+  await User.findOne({ _id: userID }, { Board: 1 })
     .populate("Board")
-    .then((user) => user[0].Board[0])
+    .then((user) => res.send(user))
     .catch((err) => res.send(err));
-  res.send(user);
+});
+
+app.get("/board/:boardID", async (req, res) => {
+  const { boardID } = req.params;
+  await Board.findById({ _id: boardID })
+    .populate("Columns")
+    .then((board) => {
+      res.send(board);
+    })
+    .catch((err) => res.send(err));
 });
 
 app.post("/user/:userID/board", async (req, res) => {
