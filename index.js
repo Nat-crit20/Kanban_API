@@ -4,7 +4,8 @@ mongoose.set("strictQuery", false);
 const { mongoDB } = require("./constants");
 
 const User = require("./models/User");
-const { Board, Task } = require("./models/Board");
+const Board = require("./models/Board");
+const Task = require("./models/Task");
 const bodyParser = require("body-parser");
 
 const app = express();
@@ -63,21 +64,43 @@ app.get("/users", async (req, res) => {
   res.json(users);
 });
 
+//Fix bug
 app.get("/user/:userID/board/:boardID", async (req, res) => {
   const { userID, boardID } = req.params;
-  const userBoard = await User.findById(userID).then(async (user) => {
-    if (!user) {
-      res.status(404).send("User not found");
-    } else if (user.Board) {
-      const board = user.Board.findIndex(boardID);
-      if (!board) {
-        res.status(404).send("Board not found");
+  const userBoard = await User.findOne({ _id: userID, Board: boardID }).then(
+    async (user) => {
+      if (!user) {
+        res.status(404).send("User not found");
+      } else if (user.Board) {
+        const board = user.Board.findIndex(boardID);
+        if (!board) {
+          res.status(404).send("Board not found");
+        }
+        return board;
       }
-      return board;
     }
-  });
+  );
   const currentBoard = await Board.findById(userBoard);
-  res.send(currentBoard);
+  res.status(201).send(currentBoard);
+});
+
+app.post("/user/:userID/board", async (req, res) => {
+  const { Name } = req.body;
+  const { userID } = req.params;
+  const board = await Board.create({
+    Name: Name,
+  });
+  await User.findOneAndUpdate(
+    { _id: userID },
+    { $addToSet: { Board: board._id } },
+    { new: true }
+  )
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 });
 
 app.listen(PORT, () => {
