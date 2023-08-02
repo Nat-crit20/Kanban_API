@@ -147,7 +147,22 @@ app.put("/column/:columnID", async (req, res) => {
       res.status(400).json(err);
     });
 });
+app.put("/board/:boardID", async (req, res) => {
+  const { Name } = req.body;
+  const { boardID } = req.params;
 
+  await Board.findOneAndUpdate(
+    { _id: boardID },
+    { $set: { Name: Name } },
+    { new: true }
+  )
+    .then((board) => {
+      res.status(200).json(board);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
 app.post("/column/:columnID/task", async (req, res) => {
   const { Title, Description, Status, SubTasks } = req.body;
   const { columnID } = req.params;
