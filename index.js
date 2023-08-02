@@ -189,6 +189,22 @@ app.put("/task/:taskID", async (req, res) => {
     });
 });
 
+app.delete("/column/:columnID/task/:taskID", async (req, res) => {
+  const { columnID, taskID } = req.params;
+  await Column.findOneAndUpdate(
+    { _id: columnID },
+    { $pull: { Tasks: taskID } },
+    { new: true }
+  )
+    .then(async (column) => {
+      await Task.findByIdAndDelete(taskID);
+      res.status(200).json(column);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
 });
