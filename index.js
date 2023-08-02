@@ -237,6 +237,22 @@ app.delete("/column/:columnID/task/:taskID", async (req, res) => {
     });
 });
 
+app.delete("/board/:boardID/column/:columnID", async (req, res) => {
+  const { columnID, boardID } = req.params;
+  await Board.findOneAndUpdate(
+    { _id: boardID },
+    { $pull: { Columns: columnID } },
+    { new: true }
+  )
+    .then(async (column) => {
+      await Column.findByIdAndDelete(columnID);
+      res.status(200).json(column);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
 });
