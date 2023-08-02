@@ -239,6 +239,27 @@ app.delete("/column/:columnID/task/:taskID", async (req, res) => {
 
 app.delete("/board/:boardID/column/:columnID", async (req, res) => {
   const { columnID, boardID } = req.params;
+  try {
+    const column = await Column.findById(columnID);
+    if (!column) {
+      return res.status(404).json({ error: "Column not found" });
+    }
+    const tasksToDelete = column.Tasks;
+    await Task.deleteMany({ _id: { $in: tasksToDelete } });
+
+    const board = await Board.findByIdAndUpdate(
+      boardID,
+      { $pull: { Columns: columnID } },
+      { new: true }
+    );
+    await Column.findByIdAndDelete(columnID);
+    res.status(200).json(board);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+app.delete("/user/:userID/board/:boardID", async (req, res) => {
+  const { columnID, boardID } = req.params;
   await Board.findOneAndUpdate(
     { _id: boardID },
     { $pull: { Columns: columnID } },
@@ -252,7 +273,6 @@ app.delete("/board/:boardID/column/:columnID", async (req, res) => {
       res.status(400).json(err);
     });
 });
-
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
 });
