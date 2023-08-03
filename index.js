@@ -164,13 +164,16 @@ app.put("/board/:boardID", async (req, res) => {
     });
 });
 app.post("/column/:columnID/task", async (req, res) => {
-  const { Title, Description, Status, SubTasks } = req.body;
+  const { Title, Description, Status, SubTasks, name } = req.body;
   const { columnID } = req.params;
 
   const task = await Task.create({
     Title,
     Description,
-    Status,
+    Status: {
+      name,
+      columnID,
+    },
     SubTasks,
   });
 
@@ -196,16 +199,19 @@ app.get("/task/:taskID", async (req, res) => {
     .catch((err) => res.send(err));
 });
 
-app.put("/task/:taskID", async (req, res) => {
-  const { taskID } = req.params;
-  const { Title, Description, Status, SubTasks } = req.body;
+app.put("/column/:columnID/task/:taskID", async (req, res) => {
+  const { columnID, taskID } = req.params;
+  const { Title, Description, SubTasks, name } = req.body;
   await Task.findOneAndUpdate(
     { _id: taskID },
     {
       $set: {
         Title,
         Description,
-        Status,
+        Status: {
+          name,
+          columnID,
+        },
         SubTasks,
       },
     },
@@ -258,21 +264,23 @@ app.delete("/board/:boardID/column/:columnID", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
 app.delete("/user/:userID/board/:boardID", async (req, res) => {
-  const { columnID, boardID } = req.params;
-  await Board.findOneAndUpdate(
-    { _id: boardID },
-    { $pull: { Columns: columnID } },
-    { new: true }
-  )
-    .then(async (column) => {
-      await Column.findByIdAndDelete(columnID);
-      res.status(200).json(column);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-    });
+  const { userID, boardID } = req.params;
+  try {
+    const board = await Board.findById(boardID);
+    const columnsToDelete = board.Columns;
+
+    await User.findByIdAndUpdate(
+      userID,
+      { $pull: { Board: boardID } },
+      { new: true }
+    );
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
 });
+
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
 });
