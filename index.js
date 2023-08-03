@@ -270,7 +270,9 @@ app.delete("/user/:userID/board/:boardID", async (req, res) => {
   try {
     const board = await Board.findById(boardID);
     const columnsToDelete = board.Columns;
-
+    await Task.deleteMany({ "Status.ColumnID": { $in: columnsToDelete } });
+    await Column.deleteMany({ _id: { $in: columnsToDelete } });
+    await Board.findByIdAndDelete(boardID);
     await User.findByIdAndUpdate(
       userID,
       { $pull: { Board: boardID } },

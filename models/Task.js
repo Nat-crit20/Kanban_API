@@ -6,7 +6,7 @@ const taskSchema = Schema({
   Description: String,
   Status: {
     name: String,
-    ColumnID: { type: Schema.Types.ObjectId, ref: "Column" },
+    columnID: { type: Schema.Types.ObjectId, ref: "Column" },
   },
   SubTasks: [
     {
