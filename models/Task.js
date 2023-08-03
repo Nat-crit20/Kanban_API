@@ -4,7 +4,10 @@ const Schema = mongoose.Schema;
 const taskSchema = Schema({
   Title: String,
   Description: String,
-  Status: String,
+  Status: {
+    name: String,
+    ColumnID: { type: Schema.Types.ObjectId, ref: "Column" },
+  },
   SubTasks: [
     {
       title: String,
