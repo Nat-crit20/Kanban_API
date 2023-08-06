@@ -202,6 +202,14 @@ app.get("/task/:taskID", async (req, res) => {
 app.put("/column/:columnID/task/:taskID", async (req, res) => {
   const { columnID, taskID } = req.params;
   const { Title, Description, SubTasks, name } = req.body;
+  await Task.findById(taskID).then(async (task) => {
+    const columnToRemove = task.Status.columnID;
+    await Column.findOneAndUpdate(
+      { _id: columnToRemove },
+      { $pull: { Tasks: taskID } },
+      { new: true }
+    );
+  });
   await Task.findOneAndUpdate(
     { _id: taskID },
     {
