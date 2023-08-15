@@ -39,7 +39,6 @@ app.get("/hello", (req, res) => {
 });
 app.post("/register", async (req, res) => {
   const { Username, Password, Email } = req.body;
-  console.log(req.body);
   await User.findOne({ Email: Email })
     .then((user) => {
       if (user) {
