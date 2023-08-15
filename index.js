@@ -36,6 +36,7 @@ app.use("/", express.static("docs"));
 
 app.post("/register", async (req, res) => {
   const { Username, Password, Email } = req.body;
+  const hashedPassword = User.hashPassword(Password)
   await User.findOne({ Email: Email })
     .then((user) => {
       if (user) {
@@ -43,7 +44,7 @@ app.post("/register", async (req, res) => {
       } else {
         User.create({
           Username: Username,
-          Password: Password,
+          Password: hashedPassword,
           Email: Email,
         })
           .then((user) => {
