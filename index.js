@@ -8,9 +8,7 @@ const Board = require("./models/Board");
 const Task = require("./models/Task");
 const Column = require("./models/Column");
 const bodyParser = require("body-parser");
-const auth = require("./auth")(app);
-const passport = require("passport");
-require("./passport");
+
 const app = express();
 const PORT = 3000;
 
@@ -27,6 +25,9 @@ async function main() {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+const auth = require("./auth")(app);
+const passport = require("passport");
+require("./passport");
 
 app.get("/", (req, res) => {
   res.send("Home");
