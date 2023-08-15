@@ -311,13 +311,18 @@ app.delete(
       const tasksToDelete = column.Tasks;
       await Task.deleteMany({ _id: { $in: tasksToDelete } });
 
-      const board = await Board.findByIdAndUpdate(
+      await Board.findByIdAndUpdate(
         boardID,
         { $pull: { Columns: columnID } },
         { new: true }
-      );
-      await Column.findByIdAndDelete(columnID);
-      res.status(200).json(board);
+      )
+        .then(async (board) => {
+          await Column.findByIdAndDelete(columnID);
+          res.status(200).json(board);
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
     } catch (error) {
       res.status(500).json({ error: "Server error" });
     }
