@@ -34,9 +34,6 @@ app.get("/", (req, res) => {
 });
 app.use("/", express.static("docs"));
 
-app.get("/hello", (req, res) => {
-  res.send("hello world");
-});
 app.post("/register", async (req, res) => {
   const { Username, Password, Email } = req.body;
   await User.findOne({ Email: Email })
