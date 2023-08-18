@@ -1,8 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const { mongoDB } = require("./constants");
-
 const User = require("./models/User");
 const Board = require("./models/Board");
 const Task = require("./models/Task");
@@ -17,7 +15,7 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect(process.env.CONNECTION_URI || mongoDB, {
+  await mongoose.connect(process.env.CONNECTION_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
