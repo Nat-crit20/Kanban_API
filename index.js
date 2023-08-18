@@ -8,7 +8,7 @@ const Board = require("./models/Board");
 const Task = require("./models/Task");
 const Column = require("./models/Column");
 const bodyParser = require("body-parser");
-
+const cors = require("cors");
 const app = express();
 const PORT = 3000;
 
@@ -25,6 +25,28 @@ async function main() {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+let allowedOrigins = [
+  "http://localhost:8080",
+  "http://localhost:1234",
+  "http://localhost:4200",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        // If a specific origin isn’t found on the list of allowed origins
+        let message =
+          "The CORS policy for this application doesn’t allow access from origin " +
+          origin;
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
 const auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
@@ -36,7 +58,7 @@ app.use("/", express.static("docs"));
 
 app.post("/register", async (req, res) => {
   const { Username, Password, Email } = req.body;
-  const hashedPassword = User.hashPassword(Password)
+  const hashedPassword = User.hashPassword(Password);
   await User.findOne({ Email: Email })
     .then((user) => {
       if (user) {
