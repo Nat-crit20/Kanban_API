@@ -261,37 +261,51 @@ app.put(
   async (req, res) => {
     const { columnID, taskID } = req.params;
     const { Title, Description, SubTasks, name } = req.body;
-    await Task.findById(taskID).then(async (task) => {
+
+    try {
+      //Find the task to be updated
+      const task = await Task.findById(taskID);
+
+      if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+
+      //Get the current column ID
       const columnToRemove = task.Status.columnID;
+
+      //Remove the task from the old column's Task array
       await Column.findOneAndUpdate(
         { _id: columnToRemove },
-        { $pull: { Tasks: taskID } },
-        { new: true }
+        { $pull: { Tasks: taskID } }
       );
-    });
-    await Task.findOneAndUpdate(
-      { _id: taskID },
-      {
-        $set: {
-          Title,
-          Description,
-          Status: {
-            name,
-            columnID,
+
+      //Update the task's information
+      await Task.findOneAndUpdate(
+        { _id: taskID },
+        {
+          $set: {
+            Title,
+            Description,
+            Status: {
+              name,
+              columnID,
+            },
+            SubTasks,
           },
-          SubTasks,
         },
-      },
-      { new: true }
-    )
-      .then((task) => {
-        if (task) {
-          res.status(200).send(task);
-        }
-      })
-      .catch((err) => {
-        res.status(400).send(err);
-      });
+        { new: true }
+      )
+        .then((task) => {
+          if (task) {
+            res.status(200).send(task);
+          }
+        })
+        .catch((err) => {
+          res.status(400).send(err);
+        });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
   }
 );
 
