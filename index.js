@@ -215,9 +215,9 @@ app.post(
   "/column/:columnID/task",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    const { Title, Description, Status, SubTasks, name } = req.body;
+    const { Title, Description, SubTasks } = req.body;
     const { columnID } = req.params;
-
+    const name = req.body.Status.name;
     const task = await Task.create({
       Title,
       Description,
@@ -260,8 +260,8 @@ app.put(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const { columnID, taskID } = req.params;
-    const { Title, Description, SubTasks, name } = req.body;
-
+    const { Title, Description, SubTasks } = req.body;
+    const name = req.body.Status.name;
     try {
       //Find the task to be updated
       const task = await Task.findById(taskID);
