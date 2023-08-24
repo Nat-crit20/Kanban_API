@@ -28,6 +28,8 @@ When creating a new Task or updating one be sure to use this format:
 }
 ```
 
+For a list of all the end points go to the [Documentation](https://nat-crit20.github.io/Kanban_API/)
+
 ## My process
 
 ### Built with
