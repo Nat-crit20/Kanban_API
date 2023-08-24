@@ -346,22 +346,38 @@ app.delete(
   }
 );
 
+//Need to fix the bug
 app.delete(
   "/user/:userID/board/:boardID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const { userID, boardID } = req.params;
     try {
+      //Find the board
       const board = await Board.findById(boardID);
+
+      if (!board) {
+        return res.status(404).json({ error: "Board not found" });
+      }
+      //Get column ID to delete
       const columnsToDelete = board.Columns;
+
+      //Delete related tasks
       await Task.deleteMany({ "Status.columnID": { $in: columnsToDelete } });
+
+      //Delete related columns
       await Column.deleteMany({ _id: { $in: columnsToDelete } });
+
+      //Delete board
       await Board.findByIdAndDelete(boardID);
+
+      //Remove board reference from user
       await User.findByIdAndUpdate(
         userID,
         { $pull: { Board: boardID } },
         { new: true }
       );
+      res.status(200).json({ message: "Board deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: "Server error" });
     }
