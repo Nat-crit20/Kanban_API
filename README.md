@@ -4,7 +4,7 @@
 
 ### The challenge
 
-Users should be able to create fetch requests that allow users to create, read, update, and delete boards, columns, and tasks
+Users should be able to create fetch requests that allow users to create, read, update, and delete boards, columns, and tasks.
 
 ### Installation
 
