@@ -128,11 +128,10 @@ app.post(
   "/user/:userID/board",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    const { Name, Columns } = req.body;
+    const { Name } = req.body;
     const { userID } = req.params;
     const board = await Board.create({
       Name: Name,
-      Columns: Columns,
     });
     await User.findOneAndUpdate(
       { _id: userID },
