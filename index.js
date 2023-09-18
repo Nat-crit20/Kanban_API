@@ -103,8 +103,11 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const { boardID } = req.params;
-    await Board.findById({ _id: boardID })
-      .populate("Columns")
+    await Board.findById(boardID)
+      .populate({
+        path: "Columns",
+        populate: { path: "Tasks" },
+      })
       .then((board) => {
         res.send(board);
       })
