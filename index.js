@@ -166,6 +166,7 @@ app.post(
       { $push: { Columns: column._id } },
       { new: true }
     )
+      .populate("Columns")
       .then((board) => {
         res.status(200).json(board);
       })
