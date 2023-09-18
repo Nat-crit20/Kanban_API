@@ -166,7 +166,10 @@ app.post(
       { $push: { Columns: column._id } },
       { new: true }
     )
-      .populate("Columns")
+      .populate({
+        path: "Columns",
+        populate: { path: "Tasks" },
+      })
       .then((board) => {
         res.status(200).json(board);
       })
