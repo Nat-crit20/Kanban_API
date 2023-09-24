@@ -241,6 +241,7 @@ app.post(
       { $push: { Tasks: task._id } },
       { new: true }
     )
+      .populate("Tasks")
       .then((column) => {
         res.status(200).json(column);
       })
