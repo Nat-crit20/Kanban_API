@@ -8,14 +8,14 @@ const Column = require("./models/Column");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 8080;
-const { mongoDB } = require("./constants");
+const PORT = process.env.PORT || 3000;
+
 main()
   .then(() => console.log("Connected to database"))
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect(mongoDB, {
+  await mongoose.connect(process.env.CONNECTION_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
