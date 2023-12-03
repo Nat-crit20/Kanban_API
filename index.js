@@ -271,17 +271,13 @@ app.put(
     const { columnID, taskID } = req.params;
     const { Title, Description, SubTasks } = req.body;
     const name = req.body.Status.name;
+    const newColumnID = req.body.Status.columnID;
     try {
       //Find the task to be updated
       const task = await Task.findById(taskID);
-      console.log(task);
       if (!task) {
         return res.status(404).json({ error: "Task not found" });
       }
-
-      //Get the current column ID
-      const newColumn = task.Status.columnID;
-      console.log(newColumn);
 
       //Remove the task from the old column's Task array
       await Column.findOneAndUpdate(
@@ -290,7 +286,7 @@ app.put(
       );
 
       await Column.findOneAndUpdate(
-        { _id: newColumn },
+        { _id: newColumnID },
         { $push: { Tasks: taskID } }
       );
 
@@ -303,7 +299,7 @@ app.put(
             Description,
             Status: {
               name,
-              columnID: newColumn,
+              columnID: newColumnID,
             },
             SubTasks,
           },
