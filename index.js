@@ -290,7 +290,7 @@ app.put(
 
       await Column.findOneAndUpdate(
         { _id: newColumn },
-        { $push: { Tasks: task._id } }
+        { $push: { Tasks: taskID } }
       );
 
       //Update the task's information
