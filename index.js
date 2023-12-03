@@ -8,7 +8,7 @@ const Column = require("./models/Column");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 main()
   .then(() => console.log("Connected to database"))
@@ -274,13 +274,14 @@ app.put(
     try {
       //Find the task to be updated
       const task = await Task.findById(taskID);
-
+      console.log(task);
       if (!task) {
         return res.status(404).json({ error: "Task not found" });
       }
 
       //Get the current column ID
       const newColumn = task.Status.columnID;
+      console.log(newColumn);
 
       //Remove the task from the old column's Task array
       await Column.findOneAndUpdate(
