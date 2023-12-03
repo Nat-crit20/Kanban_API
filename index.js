@@ -8,14 +8,14 @@ const Column = require("./models/Column");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 3000;
-
+const PORT = process.env.PORT || 8080;
+const { mongoDB } = require("./constants");
 main()
   .then(() => console.log("Connected to database"))
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect(process.env.CONNECTION_URI, {
+  await mongoose.connect(mongoDB, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
@@ -280,12 +280,17 @@ app.put(
       }
 
       //Get the current column ID
-      const columnToRemove = task.Status.columnID;
+      const newColumn = task.Status.columnID;
 
       //Remove the task from the old column's Task array
       await Column.findOneAndUpdate(
-        { _id: columnToRemove },
+        { _id: columnID },
         { $pull: { Tasks: taskID } }
+      );
+
+      await Column.findOneAndUpdate(
+        { _id: newColumn },
+        { $push: { Tasks: task._id } }
       );
 
       //Update the task's information
@@ -297,7 +302,7 @@ app.put(
             Description,
             Status: {
               name,
-              columnID,
+              newColumn,
             },
             SubTasks,
           },
