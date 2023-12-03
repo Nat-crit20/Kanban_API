@@ -302,7 +302,7 @@ app.put(
             Description,
             Status: {
               name,
-              newColumn,
+              columnID: newColumn,
             },
             SubTasks,
           },
