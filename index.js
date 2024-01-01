@@ -211,6 +211,10 @@ app.put(
       { $set: { Name: Name } },
       { new: true }
     )
+      .populate({
+        path: "Columns",
+        populate: { path: "Tasks" },
+      })
       .then((board) => {
         res.status(200).json(board);
       })
