@@ -362,6 +362,10 @@ app.delete(
         { $pull: { Columns: columnID } },
         { new: true }
       )
+        .populate({
+          path: "Columns",
+          populate: { path: "Tasks" },
+        })
         .then(async (board) => {
           await Column.findByIdAndDelete(columnID);
           res.status(200).json(board);
