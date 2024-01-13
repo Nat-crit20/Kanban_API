@@ -334,6 +334,7 @@ app.delete(
       { $pull: { Tasks: taskID } },
       { new: true }
     )
+      .populate("Tasks")
       .then(async (column) => {
         await Task.findByIdAndDelete(taskID);
         res.status(200).json(column);
