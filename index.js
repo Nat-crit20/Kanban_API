@@ -29,6 +29,7 @@ let allowedOrigins = [
   "http://localhost:1234",
   "http://localhost:4200",
   "http://localhost:3000",
+  "https://nat-crit20.github.io/kanban-client/",
 ];
 
 app.use(
