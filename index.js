@@ -381,7 +381,6 @@ app.delete(
   }
 );
 
-//Need to fix the bug
 app.delete(
   "/user/:userID/board/:boardID",
   passport.authenticate("jwt", { session: false }),
