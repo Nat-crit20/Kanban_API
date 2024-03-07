@@ -1,5 +1,6 @@
 const Board = require("../models/Board");
 const Column = require("../models/Column");
+const Task = require("../models/Task");
 
 module.exports.getColumn = async (req, res) => {
   const { columnID } = req.params;

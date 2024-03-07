@@ -4,6 +4,7 @@ mongoose.set("strictQuery", false);
 const { mongoDB } = require("./constants.js");
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes.js");
+const boardRoutes = require("./routes/boardRoutes.js");
 const userController = require("./controllers/userController");
 const boardController = require("./controllers/boardController");
 const columnController = require("./controllers/columnController");
@@ -76,34 +77,37 @@ app.get("/users", userController.getUsers);
 //   boardController.deleteBoard
 // );
 app.use("/user", passport.authenticate("jwt", { session: false }), userRoutes);
-
-app.get(
-  "/board/:boardID",
+app.use(
+  "/board",
   passport.authenticate("jwt", { session: false }),
-  boardController.getBoard
+  boardRoutes
 );
+// app.get(
+//   "/board/:boardID",
+//   passport.authenticate("jwt", { session: false }),
+//   boardController.getBoard
+// );
+// app.post(
+//   "/board/:boardID/column",
+//   passport.authenticate("jwt", { session: false }),
+//   columnController.createColumn
+// );
+// app.put(
+//   "/board/:boardID",
+//   passport.authenticate("jwt", { session: false }),
+//   boardController.updateBoard
+// );
+
 app.get(
   "/column/:columnID",
   passport.authenticate("jwt", { session: false }),
   columnController.getColumn
 );
 
-app.post(
-  "/board/:boardID/column",
-  passport.authenticate("jwt", { session: false }),
-  columnController.createColumn
-);
-
 app.put(
   "/column/:columnID",
   passport.authenticate("jwt", { session: false }),
   columnController.updateColumn
-);
-
-app.put(
-  "/board/:boardID",
-  passport.authenticate("jwt", { session: false }),
-  boardController.updateBoard
 );
 
 app.post(
