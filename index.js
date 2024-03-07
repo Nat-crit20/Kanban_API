@@ -6,10 +6,9 @@ const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes.js");
 const boardRoutes = require("./routes/boardRoutes.js");
 const columnRoutes = require("./routes/columnRoutes.js");
+const taskRoutes = require("./routes/taskRoutes.js");
 const userController = require("./controllers/userController");
-const boardController = require("./controllers/boardController");
-const columnController = require("./controllers/columnController");
-const taskController = require("./controllers/taskController");
+
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -62,21 +61,6 @@ app.post("/register", userController.register);
 
 app.get("/users", userController.getUsers);
 
-// app.get(
-//   "/user/:userID/board",
-//   passport.authenticate("jwt", { session: false }),
-//   userController.getUserBoard
-// );
-// app.post(
-//   "/user/:userID/board",
-//   passport.authenticate("jwt", { session: false }),
-//   boardController.createBoard
-// );
-// app.delete(
-//   "/user/:userID/board/:boardID",
-//   passport.authenticate("jwt", { session: false }),
-//   boardController.deleteBoard
-// );
 app.use("/user", passport.authenticate("jwt", { session: false }), userRoutes);
 app.use(
   "/board",
@@ -88,62 +72,7 @@ app.use(
   passport.authenticate("jwt", { session: false }),
   columnRoutes
 );
-// app.get(
-//   "/board/:boardID",
-//   passport.authenticate("jwt", { session: false }),
-//   boardController.getBoard
-// );
-// app.post(
-//   "/board/:boardID/column",
-//   passport.authenticate("jwt", { session: false }),
-//   columnController.createColumn
-// );
-// app.put(
-//   "/board/:boardID",
-//   passport.authenticate("jwt", { session: false }),
-//   boardController.updateBoard
-// );
-// app.delete(
-//   "/board/:boardID/column/:columnID",
-//   passport.authenticate("jwt", { session: false }),
-//   columnController.deleteColumn
-// );
-
-// app.get(
-//   "/column/:columnID",
-//   passport.authenticate("jwt", { session: false }),
-//   columnController.getColumn
-// );
-
-// app.put(
-//   "/column/:columnID",
-//   passport.authenticate("jwt", { session: false }),
-//   columnController.updateColumn
-// );
-
-// app.post(
-//   "/column/:columnID/task",
-//   passport.authenticate("jwt", { session: false }),
-//   taskController.createTask
-// );
-
-// app.put(
-//   "/column/:columnID/task/:taskID",
-//   passport.authenticate("jwt", { session: false }),
-//   taskController.updateTask
-// );
-
-// app.delete(
-//   "/column/:columnID/task/:taskID",
-//   passport.authenticate("jwt", { session: false }),
-//   taskController.deleteTask
-// );
-
-app.get(
-  "/task/:taskID",
-  passport.authenticate("jwt", { session: false }),
-  taskController.getTask
-);
+app.use("/task", passport.authenticate("jwt", { session: false }), taskRoutes);
 
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
