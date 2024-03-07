@@ -86,24 +86,7 @@ app.get(
 app.post(
   "/user/:userID/board",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { Name } = req.body;
-    const { userID } = req.params;
-    const board = await Board.create({
-      Name: Name,
-    });
-    await User.findOneAndUpdate(
-      { _id: userID },
-      { $addToSet: { Board: board._id } },
-      { new: true }
-    )
-      .then((user) => {
-        res.status(200).json(user);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  }
+  boardController.createBoard
 );
 
 app.post(
