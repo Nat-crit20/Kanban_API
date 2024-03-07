@@ -32,3 +32,24 @@ module.exports.createBoard = async (req, res) => {
       res.status(400).json(err);
     });
 };
+
+module.exports.updateBoard = async (req, res) => {
+  const { Name } = req.body;
+  const { boardID } = req.params;
+
+  await Board.findOneAndUpdate(
+    { _id: boardID },
+    { $set: { Name: Name } },
+    { new: true }
+  )
+    .populate({
+      path: "Columns",
+      populate: { path: "Tasks" },
+    })
+    .then((board) => {
+      res.status(200).json(board);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
