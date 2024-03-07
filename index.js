@@ -1,11 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
+const mongoDB = require("./constants");
 const User = require("./models/User");
 const Board = require("./models/Board");
 const Task = require("./models/Task");
 const Column = require("./models/Column");
 const bodyParser = require("body-parser");
+const userController = require("./controllers/userController");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -15,10 +17,13 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect(process.env.CONNECTION_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(
+    `mongodb+srv://Nat-crit20:Valoria246890@myflixdb.m9xnkss.mongodb.net/KanbanDB?`,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  );
 }
 
 app.use(bodyParser.json());
@@ -51,52 +56,17 @@ const auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
 
-app.get("/", (req, res) => {
-  res.send("Home");
-});
+app.get("/", userController.home);
 app.use("/", express.static("docs"));
 
-app.post("/register", async (req, res) => {
-  const { Username, Password, Email } = req.body;
-  const hashedPassword = User.hashPassword(Password);
-  await User.findOne({ Email: Email })
-    .then((user) => {
-      if (user) {
-        res.status(400).send("User already exists");
-      } else {
-        User.create({
-          Username: Username,
-          Password: hashedPassword,
-          Email: Email,
-        })
-          .then((user) => {
-            res.status(201).json(user);
-          })
-          .catch((err) => {
-            res.json(`Error ${err}`);
-          });
-      }
-    })
-    .catch((err) => {
-      res.json(`Error ${err}`);
-    });
-});
+app.post("/register", userController.register);
 
-app.get("/users", async (req, res) => {
-  const users = await User.find({});
-  res.json(users);
-});
+app.get("/users", userController.getUsers);
 
 app.get(
   "/user/:userID/board",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { userID } = req.params;
-    await User.findOne({ _id: userID }, { Board: 1 })
-      .populate("Board")
-      .then((user) => res.send(user))
-      .catch((err) => res.send(err));
-  }
+  userController.getUserBoard
 );
 
 app.get(
@@ -128,6 +98,7 @@ app.get(
       .catch((err) => res.send(err));
   }
 );
+
 app.post(
   "/user/:userID/board",
   passport.authenticate("jwt", { session: false }),
