@@ -1,17 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
+const userController = require("../controllers/userController");
+const boardController = require("../controllers/boardController");
 
-router.get(
-  "/user/:userID/board",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { userID } = req.params;
-    await User.findOne({ _id: userID }, { Board: 1 })
-      .populate("Board")
-      .then((user) => res.send(user))
-      .catch((err) => res.send(err));
-  }
-);
+router
+  .route("/:userID/board")
+  .get(userController.getUserBoard)
+  .post(boardController.createBoard);
+
+router.route("/:userID/board/:boardID").delete(boardController.deleteBoard);
 
 module.exports = router;

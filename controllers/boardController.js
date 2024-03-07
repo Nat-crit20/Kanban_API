@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const Board = require("../models/Board");
+const Task = require("../models/Task");
+const Column = require("../models/Column");
 
 module.exports.getBoard = async (req, res) => {
   const { boardID } = req.params;
