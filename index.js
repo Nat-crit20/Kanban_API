@@ -5,6 +5,7 @@ const { mongoDB } = require("./constants.js");
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes.js");
 const boardRoutes = require("./routes/boardRoutes.js");
+const columnRoutes = require("./routes/columnRoutes.js");
 const userController = require("./controllers/userController");
 const boardController = require("./controllers/boardController");
 const columnController = require("./controllers/columnController");
@@ -82,6 +83,11 @@ app.use(
   passport.authenticate("jwt", { session: false }),
   boardRoutes
 );
+app.use(
+  "/column",
+  passport.authenticate("jwt", { session: false }),
+  columnRoutes
+);
 // app.get(
 //   "/board/:boardID",
 //   passport.authenticate("jwt", { session: false }),
@@ -97,47 +103,46 @@ app.use(
 //   passport.authenticate("jwt", { session: false }),
 //   boardController.updateBoard
 // );
+// app.delete(
+//   "/board/:boardID/column/:columnID",
+//   passport.authenticate("jwt", { session: false }),
+//   columnController.deleteColumn
+// );
 
-app.get(
-  "/column/:columnID",
-  passport.authenticate("jwt", { session: false }),
-  columnController.getColumn
-);
+// app.get(
+//   "/column/:columnID",
+//   passport.authenticate("jwt", { session: false }),
+//   columnController.getColumn
+// );
 
-app.put(
-  "/column/:columnID",
-  passport.authenticate("jwt", { session: false }),
-  columnController.updateColumn
-);
+// app.put(
+//   "/column/:columnID",
+//   passport.authenticate("jwt", { session: false }),
+//   columnController.updateColumn
+// );
 
-app.post(
-  "/column/:columnID/task",
-  passport.authenticate("jwt", { session: false }),
-  taskController.createTask
-);
+// app.post(
+//   "/column/:columnID/task",
+//   passport.authenticate("jwt", { session: false }),
+//   taskController.createTask
+// );
+
+// app.put(
+//   "/column/:columnID/task/:taskID",
+//   passport.authenticate("jwt", { session: false }),
+//   taskController.updateTask
+// );
+
+// app.delete(
+//   "/column/:columnID/task/:taskID",
+//   passport.authenticate("jwt", { session: false }),
+//   taskController.deleteTask
+// );
 
 app.get(
   "/task/:taskID",
   passport.authenticate("jwt", { session: false }),
   taskController.getTask
-);
-
-app.put(
-  "/column/:columnID/task/:taskID",
-  passport.authenticate("jwt", { session: false }),
-  taskController.updateTask
-);
-
-app.delete(
-  "/column/:columnID/task/:taskID",
-  passport.authenticate("jwt", { session: false }),
-  taskController.deleteTask
-);
-
-app.delete(
-  "/board/:boardID/column/:columnID",
-  passport.authenticate("jwt", { session: false }),
-  columnController.deleteColumn
 );
 
 app.listen(PORT, () => {
