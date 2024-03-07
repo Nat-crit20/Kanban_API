@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const { mongoDB } = require("./constants.js");
+//const { mongoDB } = require("./constants.js");
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/userRoutes.js");
 const boardRoutes = require("./routes/boardRoutes.js");
