@@ -8,6 +8,9 @@ const Task = require("./models/Task");
 const Column = require("./models/Column");
 const bodyParser = require("body-parser");
 const userController = require("./controllers/userController");
+const boardController = require("./controllers/boardController");
+const columnController = require("./controllers/columnController");
+const taskController = require("./controllers/taskController");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -72,31 +75,12 @@ app.get(
 app.get(
   "/board/:boardID",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { boardID } = req.params;
-    await Board.findById(boardID)
-      .populate({
-        path: "Columns",
-        populate: { path: "Tasks" },
-      })
-      .then((board) => {
-        res.send(board);
-      })
-      .catch((err) => res.send(err));
-  }
+  boardController.getBoard
 );
 app.get(
   "/column/:columnID",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { columnID } = req.params;
-    await Column.findById({ _id: columnID })
-      .populate("Tasks")
-      .then((column) => {
-        res.send(column);
-      })
-      .catch((err) => res.send(err));
-  }
+  columnController.getColumn
 );
 
 app.post(
