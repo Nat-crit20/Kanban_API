@@ -98,23 +98,9 @@ app.post(
 app.put(
   "/column/:columnID",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { Name } = req.body;
-    const { columnID } = req.params;
-
-    await Column.findOneAndUpdate(
-      { _id: columnID },
-      { $set: { Name: Name } },
-      { new: true }
-    )
-      .then((column) => {
-        res.status(200).json(column);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  }
+  columnController.updateColumn
 );
+
 app.put(
   "/board/:boardID",
   passport.authenticate("jwt", { session: false }),
