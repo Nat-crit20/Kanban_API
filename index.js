@@ -92,30 +92,7 @@ app.post(
 app.post(
   "/board/:boardID/column",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { Name } = req.body;
-    const { boardID } = req.params;
-
-    const column = await Column.create({
-      Name: Name,
-    });
-
-    await Board.findOneAndUpdate(
-      { _id: boardID },
-      { $push: { Columns: column._id } },
-      { new: true }
-    )
-      .populate({
-        path: "Columns",
-        populate: { path: "Tasks" },
-      })
-      .then((board) => {
-        res.status(200).json(board);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  }
+  columnController.createColumn
 );
 
 app.put(
