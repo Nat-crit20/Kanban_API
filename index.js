@@ -18,7 +18,7 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect(`${mongoDB}`, {
+  await mongoose.connect(process.env.CONNECTION_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
