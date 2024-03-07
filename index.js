@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const mongoDB = require("./constants");
+const { mongoDB } = require("./constants.js");
 const User = require("./models/User");
 const Board = require("./models/Board");
 const Task = require("./models/Task");
@@ -20,13 +20,10 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect(
-    `mongodb+srv://Nat-crit20:Valoria246890@myflixdb.m9xnkss.mongodb.net/KanbanDB?`,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  );
+  await mongoose.connect(`${mongoDB}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 }
 
 app.use(bodyParser.json());
