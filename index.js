@@ -128,94 +128,19 @@ app.put(
 app.delete(
   "/column/:columnID/task/:taskID",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { columnID, taskID } = req.params;
-    await Column.findOneAndUpdate(
-      { _id: columnID },
-      { $pull: { Tasks: taskID } },
-      { new: true }
-    )
-      .populate("Tasks")
-      .then(async (column) => {
-        await Task.findByIdAndDelete(taskID);
-        res.status(200).json(column);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  }
+  taskController.deleteTask
 );
 
 app.delete(
   "/board/:boardID/column/:columnID",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { columnID, boardID } = req.params;
-    try {
-      const column = await Column.findById(columnID);
-      if (!column) {
-        return res.status(404).json({ error: "Column not found" });
-      }
-      const tasksToDelete = column.Tasks;
-      await Task.deleteMany({ _id: { $in: tasksToDelete } });
-
-      await Board.findByIdAndUpdate(
-        boardID,
-        { $pull: { Columns: columnID } },
-        { new: true }
-      )
-        .populate({
-          path: "Columns",
-          populate: { path: "Tasks" },
-        })
-        .then(async (board) => {
-          await Column.findByIdAndDelete(columnID);
-          res.status(200).json(board);
-        })
-        .catch((err) => {
-          res.status(400).json(err);
-        });
-    } catch (error) {
-      res.status(500).json({ error: "Server error" });
-    }
-  }
+  columnController.deleteColumn
 );
 
 app.delete(
   "/user/:userID/board/:boardID",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    const { userID, boardID } = req.params;
-    try {
-      //Find the board
-      const board = await Board.findById(boardID);
-
-      if (!board) {
-        return res.status(404).json({ error: "Board not found" });
-      }
-      //Get column ID to delete
-      const columnsToDelete = board.Columns;
-
-      //Delete related tasks
-      await Task.deleteMany({ "Status.columnID": { $in: columnsToDelete } });
-
-      //Delete related columns
-      await Column.deleteMany({ _id: { $in: columnsToDelete } });
-
-      //Delete board
-      await Board.findByIdAndDelete(boardID);
-
-      //Remove board reference from user
-      await User.findByIdAndUpdate(
-        userID,
-        { $pull: { Board: boardID } },
-        { new: true }
-      );
-      res.status(200).json({ message: "Board deleted successfully" });
-    } catch (error) {
-      res.status(500).json({ error: "Server error" });
-    }
-  }
+  boardController.deleteBoard
 );
 
 app.listen(PORT, () => {

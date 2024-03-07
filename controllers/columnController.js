@@ -52,3 +52,34 @@ module.exports.updateColumn = async (req, res) => {
       res.status(400).json(err);
     });
 };
+
+module.exports.deleteColumn = async (req, res) => {
+  const { columnID, boardID } = req.params;
+  try {
+    const column = await Column.findById(columnID);
+    if (!column) {
+      return res.status(404).json({ error: "Column not found" });
+    }
+    const tasksToDelete = column.Tasks;
+    await Task.deleteMany({ _id: { $in: tasksToDelete } });
+
+    await Board.findByIdAndUpdate(
+      boardID,
+      { $pull: { Columns: columnID } },
+      { new: true }
+    )
+      .populate({
+        path: "Columns",
+        populate: { path: "Tasks" },
+      })
+      .then(async (board) => {
+        await Column.findByIdAndDelete(columnID);
+        res.status(200).json(board);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};

@@ -89,3 +89,20 @@ module.exports.updateTask = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+module.exports.deleteTask = async (req, res) => {
+  const { columnID, taskID } = req.params;
+  await Column.findOneAndUpdate(
+    { _id: columnID },
+    { $pull: { Tasks: taskID } },
+    { new: true }
+  )
+    .populate("Tasks")
+    .then(async (column) => {
+      await Task.findByIdAndDelete(taskID);
+      res.status(200).json(column);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
