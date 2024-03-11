@@ -39,10 +39,6 @@ For a list of all the endpoints go to the [Documentation](https://nat-crit20.git
 - MongoDB
 - Passport
 
-### Continued development
-
-I would like to separate the index.js file into routes and components
-
 ## Author
 
 - Website - [Nathan Greuel](https://nat-crit20.github.io/Portfolio_Website/)
